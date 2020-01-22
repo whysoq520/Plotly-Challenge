@@ -1,8 +1,6 @@
 const path = "../../samples.json";
 // dropdown
 
-
-
 // Assign the dropdownmenu option to a variable
 var dropdownMenu = d3.select("#selDataset");
 const data = d3.json(path).then((data)=>{
@@ -14,9 +12,8 @@ const data = d3.json(path).then((data)=>{
         var option = dropdownMenu.append("option");
         option.text(ID);
                         
-                        });
-           
     });
+});
     
 
 
