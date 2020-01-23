@@ -17,7 +17,7 @@ function buildID(namearray) {
 
 
 
-function builtDemography (demo) {
+function buildDemography (demo) {
     var demography = d3.select("#sample-metadata");
     demography.html(" ");
     Object.entries(demo).forEach(([key, value]) =>{
@@ -27,13 +27,6 @@ function builtDemography (demo) {
     };
 
 
-
-// set a function to build bar chart
-function buildBar (bar) {
-    var barChart = d3.select("#bar");
-    barChart.html(" ");
-    
-};
 
 
 function filterDemography () {
@@ -75,13 +68,23 @@ function buildbarplots(sample) {
         orientation: "h"
     }];
     Plotly.newPlot("bar", bardata);
-
-
 };
 };
     
    //built Bubble function 
-function biuldbubble() {
+function biuldbubble(sample) {
+    //get data 
+    for (var i=0; i<sample.length; i++) {
+    let sample_values = sample.map(s =>s.sample_values)[i];
+    
+  
+    //console.log(sample_values);
+    let otu_ids = sample.map(s =>s.otu_ids)[i];
+    
+    let otu_labels = sample.map(s =>s.otu_labels)[i];
+    
+    //console.log(sample_values);
+    
     var bubbledata =[{
         x: otu_ids,
         y: sample_values,
@@ -101,11 +104,9 @@ function biuldbubble() {
   
 Plotly.plot("bubble", bubbledata, bubbleLayout);
 
-
-
     };
   
-  
+}; 
 
 
 
@@ -118,13 +119,11 @@ const data = d3.json(path).then(function(data) {
 
 
     var samples = data.samples
-    var sample_values = samples.map(sample =>sample.sample_values);
-    var topsample_values= sample_values[0].slice(0,10);
+    var sample_values = samples.map(sample =>sample.sample_values);  
     console.log(sample_values[0]);
-    var otu_ids = data.samples.map(sample =>sample.otu_ids);
-    var topotu_ids = otu_ids[0].slice(0,10);
+    var otu_ids = data.samples.map(sample =>sample.otu_ids);    
     var otu_labels = data.samples.map(sample =>sample.otu_labels);
-    var topout_labels = otu_labels[0].slice(0,10);
+   
 //     // var value =[];
 //     // var otu_ids =[];
 //     // var otu_labels =[];
@@ -135,16 +134,7 @@ const data = d3.json(path).then(function(data) {
        
 //     // };
 
-   
-//     var bardata =[{
-//         x:topsample_values.reverse(),
-//         y:topotu_ids.map(id =>  ("OTU" + id.toString())),
-//         type:"bar",
-//         orientation: "h"
-//     }];
-    
 
-    // Plotly.newPlot("bar", bardata);
 
     var bubbledata =[{
         x: otu_ids[0],
@@ -167,12 +157,12 @@ Plotly.plot("bubble", bubbledata, bubbleLayout);
 
 
 
-
-
-
     buildID(names); 
-    builtDemography (metaData[0]);
+    buildDemography (metaData[0]);
     buildbarplots(samples);
+   // biuldbubble(samples[0]);
+
+});
     //biuldbubble(samples[0]);
    // buildBar(samples[0])
     // names.forEach(ID => { 
@@ -180,13 +170,4 @@ Plotly.plot("bubble", bubbledata, bubbleLayout);
     // var option = dropdownMenu.append("option");
     // option.text(ID);
     // var optionValue = option.property("value");
-    // console.log(optionValue);/(153)   
-    
-    });
-
-    
-
-//     //demographic info
-//     const metaData = data.metadata;
-//     //console.log(metaData);
-// });
+    // console.log(optionValue);/(153)  
