@@ -75,24 +75,24 @@ function buildbarplots(sample) {
 function biuldbubble(sample) {
     //get data 
     for (var i=0; i<sample.length; i++) {
-    let sample_values = sample.map(s =>s.sample_values)[i];
+    let sample_values = sample.map(s =>s.sample_values);
     
   
     //console.log(sample_values);
-    let otu_ids = sample.map(s =>s.otu_ids)[i];
+    let otu_ids = sample.map(s =>s.otu_ids);
     
-    let otu_labels = sample.map(s =>s.otu_labels)[i];
+    let otu_labels = sample.map(s =>s.otu_labels);
     
     //console.log(sample_values);
     
     var bubbledata =[{
-        x: otu_ids,
-        y: sample_values,
-        text: otu_labels,
+        x: otu_ids[i],
+        y: sample_values[i],
+        text: otu_labels[i],
         mode: "markers",
         marker: {
-        size: sample_values/10,
-        color: otu_ids,
+        size: sample_values[i],
+        color: otu_ids[i],
         colorscale: "Earth"}
     }];
 
@@ -160,7 +160,7 @@ Plotly.plot("bubble", bubbledata, bubbleLayout);
     buildID(names); 
     buildDemography (metaData[0]);
     buildbarplots(samples);
-   // biuldbubble(samples[0]);
+    //biuldbubble(samples[0]);
 
 });
     //biuldbubble(samples[0]);
