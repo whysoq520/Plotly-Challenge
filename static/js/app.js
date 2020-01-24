@@ -3,7 +3,7 @@ var path ="../../samples.json";
 // dropdown
 
 function buildID(namearray) {
-    d3.event.preventDefault();
+    // d3.event.preventDefault();
     var dropdownMenu = d3.select("#selDataset");
     namearray.forEach(name => { 
     //console.log(name);
@@ -26,7 +26,11 @@ function buildDemography (demo) {
        });
     };
 
-
+function optionChanged(newSample){
+    console.log(newSample)
+    buildDemography (newSample);
+    buildbarplots(newSample);
+}
 
 
 function filterDemography () {
@@ -163,6 +167,12 @@ Plotly.plot("bubble", bubbledata, bubbleLayout);
     //biuldbubble(samples[0]);
 
 });
+
+
+
+// write a function that reacts to if selDataset changes and reruns all the functions to build plots by passing in the argument of the changed sample
+
+
     //biuldbubble(samples[0]);
    // buildBar(samples[0])
     // names.forEach(ID => { 
