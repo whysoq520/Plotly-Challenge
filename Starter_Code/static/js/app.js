@@ -25,7 +25,7 @@ const data = d3.json(path).then(function(data) {
     var metaData1 =(metaData[0])
         console.log(metaData1);
     var wfreq =metaData1.wfreq
-        console.log(wfreq);
+        //console.log(wfreq);
     var demography = d3.select("#sample-metadata");
         demography.html(" ");
     Object.entries(metaData1).forEach(([key, value]) =>{
@@ -58,21 +58,7 @@ const data = d3.json(path).then(function(data) {
         orientation: "h"
     }];
 
-    var barlayout = {
-        title: '',
-        font:{
-          family: 'Raleway, sans-serif'
-        },
-        showlegend: false,
-        xaxis: {
-          tickangle: -45
-        },
-        yaxis: {
-          zeroline: false,
-          gridwidth: 2
-        },
-        bargap :0.05
-      };
+
     Plotly.newPlot("bar", bardata);  
    
 
@@ -136,18 +122,17 @@ const data = d3.json(path).then(function(data) {
 
 
 
-function optionChanged(ID){
-    
+function optionChanged(ID){    
     console.log(ID);
     updateDemography (ID);
     updatePlots(ID);
+    updateGauge(ID);
 };
 
 
 function updateDemography(ID) {
     d3.json(path).then(function(data){
         var metaData = data.metadata;
-        console.log(`MetaData${metaData}`);
         for (var i=0; i<metaData.length; i++) {
             if (metaData[i].id.toString() ===ID) {
                 //console.log(metaData[i].id)    
@@ -163,6 +148,47 @@ function updateDemography(ID) {
 };
 
 
+function updateGauge(ID){
+    d3.json(path).then(function(data){
+        let metaData=data.metadata;
+        for (var j=0; j<metaData.length; j++){
+            if(metaData[j].id.toString() ===ID){
+                let wfreq=metaData[j].wfreq;
+                console.log(wfreq);
+                var gaugedata =[{
+                    domain:{x:[0,1],y:[0,1]},
+                    value:parseFloat(wfreq),
+                    title:{text: "Weekly washing Frequency"},
+                    type:"indicator",
+                    mode: "gauge+number",
+                    gauge: {axis:{range:[0,9]},
+                            steps:[{range:[0,1], text:0-1,color: "#ffebcc"},
+                                   {range:[1,2], color: "#ffff80"},
+                                   {range:[2,3], color: "#ffcc80"},
+                                   {range:[3,4], color: "#ffff66"},
+                                   {range:[4,5], color: "#b3e6ff"},
+                                   {range:[5,6], color: "#1ab2ff"},
+                                   {range:[6,7], color: "#99ff99"},
+                                   {range:[7,8], color: "#33ff33"},
+                                   {range:[8,9], color: "#ff33cc"},
+                                   ]
+                            }
+                    }];
+            
+                var gaugelayout = {
+                    width:700,
+                    height: 600, 
+                    margin: { t: 30, b: 50, l:100, r:100 } 
+                    };
+            
+                Plotly.newPlot("gauge",gaugedata, gaugelayout);
+
+                
+            };
+        };  
+    });
+
+}
 
 function updatePlots(ID) {
     //var ID= d3.select("#selDataset").property("value");
@@ -175,8 +201,9 @@ function updatePlots(ID) {
             
             let bardata =[{
                 x:samples[i].sample_values.slice(0,10).reverse(),
-                y:samples[i].otu_ids.slice(0,10).map(id =>  ("OTU" + id.toString())),
+                y:samples[i].otu_ids.slice(0,10).map(id =>  ("OTU" + id.toString())).reverse(),
                 type:"bar",
+                text:samples[i].otu_labels.slice(0,10).reverse(),
                 orientation: "h"
             }];
             Plotly.newPlot("bar", bardata);
