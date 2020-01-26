@@ -99,30 +99,79 @@ Plotly.plot("bubble", bubbledata, bubbleLayout);
 
 
 
-function optionChanged(newsample){
+function optionChanged(ID){
     
-    console.log(newsample);
-    // updateDemography (id);
-    updatePlots(newsample);
+    console.log(ID);
+    updateDemography (ID);
+    updatePlots(ID);
+};
+
+
+function updateDemography(ID) {
+    d3.json(path).then(function(data){
+        var metaData = data.metadata;
+        console.log(metaData);
+        for (var i=0; i<metaData.length; i++) {
+            if (metaData[i].id.toString() ===ID) {
+                console.log(metaData[i].id)    
+                var demography = d3.select("#sample-metadata");
+                demography.html(" ");
+                Object.entries(metaData[i]).forEach(([key, value]) =>{
+                var row = demography.append("h5");
+                row.text(`${key} :  ${value}`);
+                });
+            };
+        };
+    });
 };
 
 
 
-function updatePlots(newsample) {
-    var ID= d3.select("#selDataset").property("value");
-   
-    for (var i=0; i<newsample.length; i++) {
-        if (newsample[i].id ===ID) {
+function updatePlots(ID) {
+    //var ID= d3.select("#selDataset").property("value");
+    d3.json(path).then(function(data) {
+        var samples = data.samples 
+          
+    for (var i=0; i<samples.length; i++) {
+        if (samples[i].id ===ID) {
+            //console.log(samples[i].sample_values)
             
             let bardata =[{
-                x:newsamples[i].sample_values.slice(0,10).reverse(),
-                y:newsamples[i].otu_ids.slice(0,10).map(id =>  ("OTU" + id.toString())),
+                x:samples[i].sample_values.slice(0,10).reverse(),
+                y:samples[i].otu_ids.slice(0,10).map(id =>  ("OTU" + id.toString())),
                 type:"bar",
                 orientation: "h"
             }];
-            Plotly.newPlot("bar", bardata);  
+            Plotly.newPlot("bar", bardata);
+
+
+            let bubbledata =[{
+                x: samples[i].otu_ids,
+                y: samples[i].sample_values,
+                text: samples[i].otu_labels,
+                mode: "markers",
+                marker: {
+                size: samples[i].sample_values,
+                color: samples[i].otu_ids,
+                colorscale: "Earth"}
+            }];
+        
+            let bubbleLayout = {
+                margin: { t: 0 },
+                hovermode: "closests",
+                xaxis: { title: "OTU ID"}
+              };
+          
+        Plotly.plot("bubble", bubbledata, bubbleLayout);
+        
+            
+            
+
+
+
         };
     };
+});
 };
 
 
