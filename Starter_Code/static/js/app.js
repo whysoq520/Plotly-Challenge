@@ -39,19 +39,40 @@ const data = d3.json(path).then(function(data) {
     //console.log(samples);
     var sample_values = samples.map(sample =>sample.sample_values);  
     //console.log(sample_values[0]);
-    var top10sample_values = sample_values[0].slice(0,10)
-    //console.log(top10sample_values);
+    var top10sample_values = sample_values[0].slice(0,10).reverse();
+    console.log(top10sample_values);
     var otu_ids = data.samples.map(sample =>sample.otu_ids); 
-    var top10otu_ids = otu_ids[0].slice(0,10)   
+    var top10otu_ids = otu_ids[0].slice(0,10).reverse();
+    
     var otu_labels = data.samples.map(sample =>sample.otu_labels);
+    var top10otu_labels = otu_labels[0].slice(0,10).reverse();
+    console.log(top10otu_labels);
+    
     
     //bar plot
     var bardata =[{
-        x:top10sample_values.reverse(),
+        x:top10sample_values,
         y:top10otu_ids.map(id =>  ("OTU" + id.toString())),
         type:"bar",
+        text:top10otu_labels,
         orientation: "h"
     }];
+
+    var barlayout = {
+        title: '',
+        font:{
+          family: 'Raleway, sans-serif'
+        },
+        showlegend: false,
+        xaxis: {
+          tickangle: -45
+        },
+        yaxis: {
+          zeroline: false,
+          gridwidth: 2
+        },
+        bargap :0.05
+      };
     Plotly.newPlot("bar", bardata);  
    
 
@@ -100,6 +121,7 @@ const data = d3.json(path).then(function(data) {
                        ]
                 }
         }];
+
     var gaugelayout = {
         width:700,
         height: 600, 
